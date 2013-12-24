@@ -1,0 +1,161 @@
+html {
+    /* sayfa zıplaması sorunu için */
+    overflow-y: scroll;    
+}
+
+body{
+    /* sayfanın IE 5'te ortalanması için */
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color: #333;
+}
+
+th, td {
+    border: 1px solid #083d65;
+}
+
+thead th {
+    background-color: #f7f7f7;
+}
+
+tbody tr:hover {
+    background-color: #ffffdd;
+}
+
+#kapsayici{
+    margin: 25px auto;
+    width: 750px;
+    text-align: left;
+}
+
+#header{
+    position: relative;
+    padding: 0 6px;
+}
+    #header big{
+        font-size: 1.4em;
+        color: #0a3f67;
+        text-shadow: 1px 1px 1px #ddd;
+    }
+
+#content{
+    border-top: 1px solid #24618e;
+    border-bottom: 1px solid #24618e;
+    padding: 20px;
+    box-shadow: 0px 0px 4px #ccc;
+    -moz-box-shadow: 0px 0px 4px #ccc; /* FF3.5+ */
+    -webkit-box-shadow: 0px 0px 4px #ccc; /* Saf3.0+, Chrome */
+    box-shadow: 0px 0px 4px #ccc; /* Opera 10.5, IE 9.0 */
+    
+}
+
+
+/* = Uyarı ve Bilgi kutuları
+-----------------------------------------------------------------------------*/
+div.uyari,
+div.bilgi{
+  margin: 33px 0px;
+  padding: 10px;
+  font: normal 14px Verdana, Arial, Helvetica, sans-serif;
+  color: #333;
+  text-align: center;
+}
+
+div.uyari{
+  border: 1px solid #f20000;
+  background-color: #ffd9d9;
+}
+
+div.bilgi{
+  border: 1px solid #9ddae6;
+  background-color: #e2ecee;
+}
+
+
+/* = sekmeler
+-----------------------------------------------------------------------------*/
+#tabs ul{
+    float: right;
+    list-style:none;
+    margin: 0;
+    padding: 0;
+}
+    #tabs ul li{
+        display: inline;
+        margin: 0;
+        padding: 0;
+    }
+        #tabs ul li a{
+            float: left;
+            background: url(../img/tab-sol.gif) left top no-repeat;
+            margin: 0 2px;
+            padding: 0 0 0 5px;
+            text-decoration: none;
+        }
+
+        #tabs ul li a:hover, 
+        #tabs ul li a.aktif{
+            background-position: 0% -42px;
+        }
+            #tabs ul li a span{
+                float: left;
+                display: block;
+                color: #24618E;
+                background: url(../img/tab-sag.gif) right top no-repeat;
+                padding: 5px 12px 5px 6px;
+            }
+            #tabs ul li a span:first-letter{
+                text-decoration: underline;
+            }
+            #tabs ul li a:hover span,
+            #tabs ul li a.aktif span{
+                background-position: 100% -42px;
+                color: #fff;
+            }
+
+
+/* = Tanıtım sayfası
+-----------------------------------------------------------------------------*/
+#sayfaTanitim #eburhanAraclari{
+    text-align: center;
+    margin-top: 30px;
+}
+
+
+/* = Metotlar sayfası
+-----------------------------------------------------------------------------*/
+p.img img{
+    border: 2px solid #eee;
+    display: block;
+}
+p.img small{
+    margin-top: 5px;
+    display: block;
+}
+
+#sayfaMetotlar li{
+    margin-top: 10px;
+}
+
+#sayfaMetotlar > div > h3{
+    color: #fff;
+    background-color: #333;
+}
+
+/* = CHANGELOG sayfası
+-----------------------------------------------------------------------------*/
+dd{
+    background:url(../img/ok.gif) 0 9px no-repeat;
+    margin-bottom: 0px;
+    padding-left: 15px;
+    margin-left: 25px;
+}
+dd:hover{
+    background-color:#FFFFE6
+}
+
+dt{
+    margin-top:2em;
+}

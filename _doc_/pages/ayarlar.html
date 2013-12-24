@@ -1,0 +1,194 @@
+<div id="sayfaAyarlar">
+  <h2>Ayarlar</h2>
+  <p>Bu sınıf sayesinde çeşitli birçok ayarı kolayca ve tek bir dosya içerisinden yapabilirsiniz. Ayarlar varsayılan olarak <strong>dbo.opt.php</strong> isimli dosya içerisinde tutulmaktadır. Bu dosyaya bakarak ayarların nasıl tanımlandığını görebilirsiniz. </p>
+  <p>Sınıfın ayalarını 4 grup altında toplayabiliriz:</p>
+  <h3>1) Veritabanı ile ilgili ayarlar (dbase)</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th width="10%">isim</th>
+        <th width="50%">açıklama</th>
+        <th width="30%">alabileceği değerler</th>
+        <th width="10%">tür</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="col">type</th>
+        <td>bağlantıda kullanılacak olan wrapper türü</td>
+        <td>mysql, mysqli, mssql, sqlsrv, postgresql, sqlite, odbc</td>
+        <td>string</td>
+      </tr>
+      <tr>
+        <th scope="col">conf</th>
+        <td>bağlanılacak olan veritabanına özgü ayarlar</td>
+        <td>wrapper'a özgü ayarlar (aşağıdaki örneğe bakınız)</td>
+        <td>array</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    wrapper olarak 
+    <select onchange="sampleConf(this.value, 'dbase');">
+        <option value="mysql">mysql</option>
+        <option value="mysqli" selected="selected">mysqli</option>
+        <option value="sqlsrv">sqlsrv</option>
+        <option value="mssql">mssql</option>
+        <option value="postgresql">postgresql</option>
+        <option value="sqlite">sqlite</option>
+        <option value="odbc">odbc</option>
+    </select>
+    seçildiğinde örnek ayarlar: 
+  </p>
+<pre class="sh_php" id="dbase_sampleConf">
+'dbase' => array
+(
+    'type' => 'mysqli',
+    'conf' => array(
+        'name' => 'sitebilgi',      // veritabanı adı
+        'host' => 'localhost',      // veritabanı adresi
+        'port' => '3306',           // veritabanı portu
+        'user' => 'root',           // kullanıcı adı
+        'pass' => '',               // kullanıcı parolası
+        'open' => false             // bağlantı açık kalsın mı (persist)?
+    )
+)
+</pre>
+  <hr />
+  <h3>2) Önbellekleme ile ilgili ayarlar (cache)</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th width="10%">isim</th>
+        <th width="50%">açıklama</th>
+        <th width="30%">alabileceği değerler</th>
+        <th width="10%">tür</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="col">type</th>
+        <td>önbellek işlemi için kullanılacak olan adaptör</td>
+        <td>file, apc, eaccelerator, xcache, memcache, sqlite</td>
+        <td>string</td>
+      </tr>
+      <tr>
+        <th scope="col">time</th>
+        <td>verilerin önbellekte kaç <em>saniye</em> kalacağını belirtir</td>
+        <td>0 haricinde pozitif bir tamsayı</td>
+        <td>integer</td>
+      </tr>
+      <tr>
+        <th scope="col">rows</th>
+        <td>verilerin önbelleğe alınabilmesi için toplam kaç satır kayıttan oluşması gerektiğini belirtir</td>
+        <td>0 haricinde pozitif bir tamsayı</td>
+        <td>integer</td>
+      </tr>
+      <tr>
+        <th scope="col">conf</th>
+        <td>kullanılan adaptöre özgü ayarlar</td>
+        <td>adaptöre özgü ayarlar  (aşağıdaki örneğe bakınız)</td>
+        <td>array</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    adaptör olarak
+    <select onchange="sampleConf(this.value, 'cache');">
+        <option value="file" selected="selected">file</option>
+        <option value="apc">apc</option>
+        <option value="eaccelerator">eaccelerator</option>
+        <option value="xcache">xcache</option>
+        <option value="memcache">memcache</option>
+        <option value="sqlite">sqlite</option>
+    </select>
+    seçildiğinde örnek ayarlar: 
+  </p>
+<pre class="sh_php" id="cache_sampleConf">
+'cache' => array
+(
+    'type' => 'file',
+    'time' => 150,
+    'rows' => 0,
+    'conf' => array(
+        'maxTime' => 86400,                 // süre belirtilmezse uygulanacak süre
+        'keyFunc' => 'md5',                 // kaydedilecek verilerin anahtar fonksiyonu
+        'dirPath' => './log/cache/',        // dosyaların kaydedileceği klasör
+        'fileExt' => '.cache'               // dosyaların uzantısı (.php de olabilir)
+    )
+)
+</pre>
+  <hr />
+  <h3>3) Hatalar ile ilgili ayarlar (error)</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th width="10%">isim</th>
+        <th width="50%">açıklama</th>
+        <th width="30%">alabileceği değerler</th>
+        <th width="10%">tür</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="col">path</th>
+        <td>oluşan hatalarla ilgili bilgilerin kaydedileceği depo klasör</td>
+        <td>geçerli ve yazılabilir bir klasör yolu</td>
+        <td>string</td>
+      </tr>
+      <tr>
+        <th scope="col">save</th>
+        <td>oluşan hatalar bir dosyaya kaydedilsin mi?</td>
+        <td>true veya false</td>
+        <td>boolean</td>
+      </tr>
+      <tr>
+        <th scope="col">show</th>
+        <td>oluşan hatalar ekranda gösterilsin mi?</td>
+        <td>true veya false</td>
+        <td>boolean</td>
+      </tr>
+      <tr>
+        <th scope="col">exit</th>
+        <td>hatalar ekranda gösterildikten sonra programdan çıkılsın mı?</td>
+        <td>true veya false</td>
+        <td>boolean</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Örnek:</p>
+<pre class="sh_php">
+'error' => array
+(
+    'path' => './log/error/',
+    'save' => true,             // hataları kaydet
+    'show' => true,             // hataları ekranda göster
+    'exit' => true              // hataları gösterdikten sonra programdan çık 
+)
+</pre>
+  <hr />  
+  <h3>4) Yakalama Modu ile ilgili ayarlar (fetch)</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th width="10%">isim</th>
+        <th width="50%">açıklama</th>
+        <th width="30%">alabileceği değerler</th>
+        <th width="10%">tür</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="col">fetch</th>
+        <td>veritabanından yakalanan verilerin formatını belirtir</td>
+        <td>obj, arr, num</td>
+        <td>string</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Örnek:</p>
+<pre class="sh_php">
+'fetch' => 'obj'    // dönen veriler Object türünde olsun
+</pre>
+</div>
+<!-- // sayfaAyarlar -->

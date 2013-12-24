@@ -1,0 +1,24 @@
+<pre class="sh_php">
+'cache' => array
+(
+    'type' => 'memcache',
+    'time' => 150,
+    'rows' => 0,
+    'conf' => array(
+        'servers' => array(
+            // yerel memcache sunucusu
+            array(
+                'host' => 'localhost',
+                'port' => 11211,
+                'status' => true,
+                'weight' => 1,
+                'timeout' => 1, 
+                'persistent' => false, 
+                'retry_interval' => 15,
+                'failure_callback' => null
+            ),
+        ),
+        'compress' => 0         // veriler sıkıştırılsın mı?
+    )
+)
+</pre>

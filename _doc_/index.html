@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>eBurhan DB Class v1.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="author" content="Erhan BURHAN - http://www.eburhan.com" />
+    <link href="assets/css/html.css" rel="stylesheet" type="text/css" media="all">
+    <link href="assets/css/ozel.css" rel="stylesheet" type="text/css" media="all">
+    <link href="assets/css/index.css" rel="stylesheet" type="text/css" media="all">
+    <link href="assets/js/shjs/sh_eburhan.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="assets/js/Hash.js"></script>
+    <script type="text/javascript" src="assets/js/shjs/sh_main.min.js"></script>
+    <script type="text/javascript" src="assets/js/shjs/sh_php.min.js"></script>
+    <script type="text/javascript" src="assets/js/shjs/sh_sql.min.js"></script>
+    <script type="text/javascript" src="assets/js/DOMAssistantCompressed-2.8.js"></script>
+    <script type="text/javascript">
+        // geçerli hash dizisi (global)
+        window.hashArray = [];
+    
+        // DOM hazırsa yapılacak olan işlemler
+        DOMAssistant.DOMReady(function(){
+    
+            // Geçerli hash listesinin içerisini doldur
+            $$('tabs').elmsByAttribute('href').each(function(obj){
+                hashArray.push(obj.href.split('#')[1]);
+            });
+
+            // NOT: eğer iframe parametresi vermezsek IE 6'da çalışmaz
+            Hash.init(myHashHandler, $$('IframeForHash'));
+
+            // Sekmeler arasında tuşa basarak dolaşabilmeyi sağlıyoruz
+            $(document).addEvent('keydown', function(e){
+                // basılan tuş F5 tuşuysa geri dön
+                if( e.keyCode === 116 ) return;
+
+                // basılan tuşu karaktere çevir ve küçük harfe dönüştür
+                var chrTus = String.fromCharCode(e.keyCode).toLowerCase();
+
+                // basılan tuşun hangi sekmeye ait olduğunu tespit et
+                for(var i = 0, j = hashArray.length, tab; i < j; ++i){
+                    tab = hashArray[i];
+                    if( chrTus === tab.substring(0, 1) ){
+                        Hash.go(tab);
+                        break;
+                    }
+                }
+            });
+        });
+
+        // Hash değiştiği zaman devreye girecek olan fonksiyon
+        function myHashHandler(newHash, initial) {
+            if( hashArray.inArray(newHash) ){
+                loadPage(newHash);
+                selectTab(newHash);
+                window.scrollTo(0,0);
+            } else {
+                // sayfa ilk yüklendiğinde herhangi bir hash yoksa...
+                if(initial) Hash.go(hashArray[0]);
+            }
+        };
+
+        // Dışarıdan bir sayfa içeriği yükle
+        function loadPage(page){
+            $$('content').load('pages/'+page+'.html');
+            triggerHighlight(2);
+        };
+
+        // En son tıklanmış sekmeyi seçili hale getir
+        function selectTab(href){
+            $$("tabs").elmsByAttribute('href').each(function(obj){
+                if( href === obj.href.split('#')[1] ){
+                    $(obj).addClass('aktif');
+                } else {
+                    $(obj).removeClass('aktif');
+                }
+            });
+        };
+
+        // Bir değerin, bir dizi içinde olup olmadığını söyler
+        if( Array.prototype.inArray === undefined ){
+            Array.prototype.inArray = function(val) {
+                var j = this.length;
+                for (var i=0; i<j; ++i) {
+                    if (this[i] === val) { 
+                        return true;
+                    }
+                }
+                return false;
+            };
+        };
+
+        // Ayar sayfasına '/pages/sampleConfs/' altındaki örnek ayarları yükler
+        function sampleConf(file, id){
+            $$(id + '_sampleConf').load('pages/sampleConfs/'+id+'_'+file+'.html');
+            triggerHighlight(500);
+        }
+
+        // Ajax işleminden sonra program kodlarını renklendirir
+        function triggerHighlight(timeout){
+            window.setTimeout('sh_highlightDocument()', timeout);
+        }
+    </script>
+</head>
+<body>
+    <div id="kapsayici">
+        <div id="header" class="cf">
+            <div id="title" class="sol">
+                <big>eBurhan DBO Class v1.1</big>
+            </div>
+            <div id="tabs" class="sag">
+                <ul class="cf">
+                    <li><a href="#tanitim" class="aktif"><span>tanıtım</span></a></li>
+                    <li><a href="#kullanim"><span>kullanım</span></a></li>
+                    <li><a href="#ayarlar"><span>ayarlar</span></a></li>
+                    <li><a href="#metotlar"><span>metotlar</span></a></li>
+                    <li><a href="#gecmis"><span>geçmiş</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="content">
+            <noscript>
+                <div class="uyari">
+                    <strong>HATA:</strong>
+                    kullandığınız web tarayıcısının javaScript özelliği aktif değil
+                </div>
+            </noscript>
+        </div>
+        <div id="footer" class="cf">
+            <p class="sol">Telif Hakkı &copy; 2010 <br /> www.eburhan.com</p>
+            <p class="sag"><img src="assets/img/eburhan2.png" /></p>
+        </div>
+    </div>
+    <iframe id="IframeForHash" class="gizli"></iframe>
+</body>
+</html>

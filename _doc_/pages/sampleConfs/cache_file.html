@@ -1,0 +1,14 @@
+<pre class="sh_php">
+'cache' => array
+(
+    'type' => 'file',
+    'time' => 150,
+    'rows' => 0,
+    'conf' => array(
+        'maxTime' => 86400,                 // süre belirtilmezse uygulanacak süre
+        'keyFunc' => 'md5',                 // kaydedilecek verilerin anahtar fonksiyonu
+        'dirPath' => './log/cache/',        // dosyaların kaydedileceği klasör
+        'fileExt' => '.cache'               // dosyaların uzantısı (.php de olabilir)
+    )
+)
+</pre>

@@ -1,0 +1,409 @@
+<div id="sayfaMetotlar">
+<h2> Metotlar</h2>
+<p> Sınıf içerisindeki her metodun ayrı bir görevi vardır. Kullanmanıza izin verilen metotlar altta tek tek açıklanmıştır.</p>
+<ol class="cf">
+    <div class="sol">
+      <li>
+        Sınıfı hazırlama &amp; Seçenek belirleme<br />
+        <a href="#getInstance">getInstance</a>, <a href="#getOpt">getOpt</a>, <a href="#setOpt">setOpt</a>
+      </li>
+      <li>
+        Bağlantı açma &amp; Veritabanı seçme<br />
+        <a href="#connect_db">connect_db</a>, <a href="#select_db">select_db</a>
+      </li>
+      <li>
+        Sorgu oluşturma<br />
+        <a href="#setSql">setSql</a>, <a href="#getSql">getSql</a>, 
+        <a href="#setArg">setArg</a>, <a href="#runSql">runSql</a>
+      </li>
+    </div>
+    <div class="sag">
+      <li>
+        Sonuçları alma<br />
+        <a href="#result">result</a>, <a href="#getAll">getAll</a>, 
+        <a href="#getRow">getRow</a>, <a href="#getOne">getOne</a>, 
+        <a href="#getLink">getLink</a>, 
+      </li>
+      <li>
+        İşlem sonucunu alma<br />
+        <a href="#affRows">affRows</a>, <a href="#numRows">numRows</a>, <a href="#insertID">insertID</a>, 
+        <a href="#queryCount">queryCount</a>, <a href="#queryTime">queryTime</a>
+      </li>
+      <li>
+        Hata işleme &amp; Bilgi alma<br />
+        <a href="#giveInfo">giveInfo</a>, <a href="#dumpInfo">dumpInfo</a>, <a href="#dump">dump</a>
+      </li>
+    </div>
+</ol>
+
+
+<hr /> <!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
+
+<div id="getInstance">
+    <h3>getInstance</h3>
+    <p>Eğer yoksa sınıfın yeni bir örneğini oluşturur, varsa daha önce oluşturulmuş olan örneği geri döndürür. Static'tir.</p>
+<pre class="sh_php">
+$dbo = DBO::getInstance();
+</pre>
+    <p><em>İPUCU:</em> fonksiyonlar içerisinden DBO sınıfına erişmek isterseniz <strong>global</strong> kelimesi yerine bu metodu kullanabilirsiniz.</p>
+<pre class="sh_php">
+$dbo = DBO::getInstance();
+$dbo->setOpt($opt);
+$dbo->connect_db();
+
+function uyeYasiGetir($uyeAdi)
+{
+    // yeniden seçenek belirtmeye ve bağlantı açmaya gerek yok
+    // çünkü üstteki sınıf nesnesini aynen devralmış oluyoruz.
+    $dbo = DBO::getInstance();
+
+    $dbo->setSql('SELECT `yas` FROM `uyeler` WHERE `uyeAdi` = %s');
+    $dbo->setArg($uyeAdi);
+    $dbo->runSql();
+
+    return $dbo->getOne();
+}
+</pre>
+</div>
+
+<div id="getOpt">
+    <h3>getOpt</h3>
+    <p>sınıf içerisinde geçerli olan seçeneklere erişim sağlar. Parametre verilmezse bütün seçenekleri, geçerli bir parametre girilirse sadece ilgili seçeneği alır. Geçersiz parametre girildiğinde hata fırlatır <em>(throw new Exception)</em></p>
+<pre class="sh_php">
+// bütün seçenekleri al
+$opt = $dbo->getOpt();
+
+// sadece önbellekleme ile ilgili seçenekleri al
+$opt = $dbo->getOpt('cache');
+
+// sadece veritabanı portuyla ilgili olan seçeneği al
+$opt = $dbo->getOpt('dbase.conf.port');
+</pre>
+</div>
+
+<div id="setOpt">
+    <h3>setOpt</h3>
+    <p>sınıf içerisinde geçerli olacak seçenekleri atamamızı sağlar. İstersek bütün seçenekleri aynı anda, istersek sadece istediğimiz seçeneği değiştirebiliriz. Geçersiz parametre girildiğinde hata fırlatır <em>(throw new Exception)</em></p>
+<pre class="sh_php">
+// bütün seçenekleri değiştir ($opt bir Array olmalı)
+$dbo->setOpt($opt);
+
+// sadece önbellekleme ile ilgili seçenekleri değiştir
+$dbo->setOpt('cache', array(
+    'type' => 'xcache',
+    'time' => 360
+));
+
+// sadece veritabanı portuyla ilgili olan seçeneği değiştir
+$dbo->setOpt('dbase.conf.port', '5645');
+</pre>
+</div>
+
+
+<hr /> <!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
+
+<div id="connect_db">
+    <h3>connect_db</h3>
+    <p>En son geçerli olan veritabanı <em>(dbase)</em> ayarlarını kullanarak bir veritabanı bağlantısı açar. Kullanılması zorunludur.</p>
+<pre class="sh_php">
+// veritabanına bağlantısı aç
+$dbo->connect_db();
+</pre>
+</div>
+
+<div id="select_db">
+    <h3>select_db</h3>
+    <p>O an üzerinde çalışmakta olduğunuz veritabanından farklı bir veritabanı seçmenizi sağlar. Seçilecek olan veritabanı ismini parametre olarak girmeniz gerekir. Geçersiz parametre girildiğinde hata fırlatır <em>(throw new Exception)</em></p>
+<pre class="sh_php">
+// portal isimli veritabanını seç
+$dbo->select_db('portal');
+</pre>
+</div>
+
+
+<hr /> <!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
+
+<div id="setSql">
+    <h3>setSql</h3>
+    <p> Sorguda kullanılacak olan SQL cümleciğinin girildiği fonksiyondur.</p>
+<pre class="sh_php">
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %s, %s, %u)');
+</pre>
+    <div class="uyari">SQL cümleciğinin içerisine <strong>kesinlikle</strong> doğrudan değişken <u>yazmamalısınız!</u> Bunun yerine PHP'nin yerleşik <a href="http://www.php.net/sprintf">sprintf()</a> fonksiyonunda kullandığımız <strong>tip belirteçleri</strong> kullanmalısınız. Sql Injection türündeki saldırılardan kaçınabilmek amacıyla bu son derece önemlidir. Ayrıca bakınız: <a href="#setArg">setArg</a></div>
+    <p>Sıklıkla kullanılması muhtemel olan belli başlı tip belirteçleri: </p>
+    <ul class="boslukYok">
+      <li><span class="sekme">c:</span> tek bir ascii karakterini belirtir </li>
+      <li><span class="sekme">d:</span> işaretli veya işaretsiz bütün tamsayıları belirtir </li>
+      <li><span class="sekme">u:</span> işaretsiz <i>(pozitif)</i> tamsayıları belirtir </li>
+      <li><span class="sekme">f:</span> kayan noktalı <i>(virgüllü)</i> sayıları belirtir</li>
+      <li><span class="sekme">s:</span> string <i>(alfa-sayısal)</i> ifadeleri belirtir</li>
+    </ul>
+    <p>Ayrıca, tekrarlamalardan kaçınmak için <strong>rakamsal</strong> tip belirteçleri de kullanabilirsiniz.</p>
+<pre class="sh_php">
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %1$s, %2$s, %3$u)');
+</pre>
+</div>
+
+<div id="setArg">
+    <h3>setArg</h3>
+    <p> Eğer <a href="#setSql">setSql()</a> fonksiyonunda tip belirteçleri kullanıldıysa, bu belirteçlerin yerine geçecek olan değişkenleri girmenizi sağlar. Doğrudan kendiniz değer de girebilirsiniz tabii...</p>
+<pre class="sh_php">
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %s, %s, %u)');
+$dbo->setArg('Erhan', 'Ankara', 25);
+</pre>
+    <p>Veya aynı şeyi şu şekilde de yapabilirsiniz:</p>
+<pre class="sh_php">
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %1$s, %2$s, %3$u)');
+$dbo->setArg('Erhan', 'Ankara', 25);
+</pre>
+    <p>Eğer <a href="#setSql">setSql()</a> fonksiyonu içerisinde tip belirteçlerinden herhangi birini <u>kullanmadıysanız</u> bu fonksiyonu kullanmanıza gerek yoktur. </p>
+</div>
+
+<div id="runSql">
+    <h3>runSql</h3>
+    <p> Hazırlamış olduğunuz sql cümleciğini çalıştırır ve böylece sorgulamayı yapar. Kullanılması zorunludur.</p>
+<pre class="sh_php">
+$dbo->runSql();
+</pre>
+    <p><strong>cache zamanlama:</strong> Bu fonksiyonun <u>birinci</u> parametresine 0'dan büyük bir tamsayı değeri girerseniz, <u>o anki</u> sorgu sonucunun önbelleğe alınıp alınmayacağını belirlemiş olursunuz. Bu özelliği etkinleştirmek için, değer olarak 0'dan büyük bir tamsayı girmelisiniz. Girilen değer "dakika" cinsinden kabul edilir. </p>
+<pre class="sh_php">
+// girilen sql cümleciğine bağlı olarak,
+// sorgu sonucunu 10 dakikalığına önbelleğe al
+$dbo->setSql('SELECT * FROM `uyeler`');
+$dbo->runSql(10);
+</pre>
+    <p><strong>cache limitleme:</strong> Bu fonksiyonun <u>ikinci</u> parametresine 0'dan büyük bir tamsayı değeri girerseniz, <u>o anki</u> sorgudan geri dönen verinin önbelleğe alınabilmesi için, geri dönen verinin girmiş olduğunuz değer kadar satıra sahip olması gereklidir. </p>
+<pre class="sh_php">
+// bu sorgu sonucunu 5 dakikalığına önbelleğe al
+// geriye dönen satır sayısı 150 ve daha fazla olmak şartıyla
+$dbo->setSql('SELECT * FROM `uyeler`');
+$dbo->runSql(5, 150);
+</pre>
+    <p><strong>not:</strong> bu metoda girilen değerler, seçenekler dosyasında belirtilmiş değerleri yalnızca o anki sorgu için iptal ederler.</p>
+</div>
+
+
+<hr /> <!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
+
+<div id="result">
+    <h3>result</h3>
+    <p> Veritabanına gönderilen en son sorgunun başarılı olup olmadığını söyler. Geriye <em>true</em> veya <em>false</em> döndürür</p>
+<pre class="sh_php">
+// 123 numaralı üyenin ismini güncelle
+$dbo->setSql('UPDATE `uyeler` SET `isim` = %s WHERE `uyeNo` = %u');
+$dbo->setArg('Erhan BURHAN', 123);
+$dbo->runSql();
+
+// güncelleme sorgusu başarılı oldu mu?
+if( $dbo->result() ){
+    echo 'sorgu başarıyla çalıştı';
+} else {
+    echo 'sorgu başarısız oldu!';
+}
+</pre>
+</div>
+
+<div id="getAll">
+    <h3>getAll</h3>
+    <p>Bir sorgu sonunda birden fazla satır geriye döndüyse bu satırların hepsini alır. Bu fonksiyonda argüman olarak <em>(obj, arr, num)</em> değerlerinden herhangi birisini kullanabilirsiniz. Argüman girilmezse 'obj' argümanı almış sayılır.</p>
+<pre class="sh_php">
+// geri dönen satırların hepsini al
+$rows = $dbo->getAll();
+
+foreach( $rows as $row )
+{
+    print $row->isim
+    print $row->sehir;
+    print $row->yas;
+    print '&lt;br /&gt;';
+}
+</pre>
+    <p> 'arr' değerini argüman olarak aldığında: </p> 
+<pre class="sh_php">
+$rows = $dbo->getAll('arr');
+
+foreach( $rows as $row )
+{
+    print $row['isim'];
+    print $row['sehir'];
+    print $row['yas'];
+    print '&lt;br /&gt;';
+}
+</pre>
+    <p> Eğer sorgu sonucu boş ise bu fonksiyon geriye boş bir <strong>array()</strong> döndürecektir. </p>
+</div>
+
+<div id="getRow">
+    <h3>getRow</h3>
+    <p>Sorgu sonucunda elde edilen verilere, satır satır erişmemizi sağlar. Kaçıncı satırdan itibaren verilerin alınacağını ilk argümana girebilirsiniz <i>(birden fazla satır varsa)</i>. Eğer sorgu sonucu boş ise bu fonksiyon geriye boş bir <strong>array()</strong> döndürecektir.</p>
+<pre class="sh_php">
+// ilk satır
+$dbo->getRow();
+
+// 10. satır
+$dbo->getRow(10);
+
+// 5. satır
+$dbo->getRow(5, 'obj');
+</pre>
+    <p>İkinci argüman olarak, <em>(obj, arr, num)</em> değerlerinden birisini kullanabilirsiniz. İkinci argümana birşey girilmezse varsayılan olarak 'num' argümanı almış gibi davranır. Neden böyle davrandığını aşağıdaki ipucunda görebilirsiniz:</p>
+<pre class="sh_php">
+// tek satırlık veri al
+$dbo->setSql('SELECT `isim`,`sehir` FROM `uyeler` WHERE `no` = 1');
+$dbo->runSql();
+
+list($isim, $sehir) = $dbo->getRow();
+
+echo "isim: $isim\n";
+echo "şehir: $sehir";
+</pre>
+    <p><em>İPUCU:</em> bu fonksiyon 'num' argümanı almış gibi kullanılırsa, gelen verilere PHP'nin yerleşik <a href="http://php.net/function.list.php">list()</a> fonksiyonu ile kolayca erişebilirsiniz <i>(üstteki örneğe bakınız)</i>.</p>
+</div>
+
+<div id="getOne">
+    <h3>getOne</h3>
+    <p> Birçok kez yalnızca tek bir veri elde etmek bizim için yeterli olabilmektedir. Böyle durumlarda bu fonksiyonu pratik bir şekilde kullanabilirsiniz. Örneğin alttaki örnekte, elde etmek istediğimiz tek bir veri var; o da tüm üyelerin yaş ortalaması... </p>
+<pre class="sh_php">
+// üyelerin yaş ortalamasını sorgula
+$dbo->setSql('SELECT AVG(yas) FROM uyeler');
+$dbo->runSql();
+
+echo $dbo->getOne();
+</pre>
+    <p> Eğer sorgu sonucu boş ise bu fonksiyon geriye <strong>null</strong> döndürecektir. </p>
+</div>
+
+<div id="getLink">
+    <h3>getLink</h3>
+    <p>O anda aktif olan veritabanı bağlantısını verir. Bu aktif bağlantıyı kullanarak, sınıf haricinde veritabanı üzerinde işlemler yapabilirsiniz</p>
+<pre class="sh_php">
+$link = $dbo->getLink();
+</pre>
+</div>
+
+<div id="getSql">
+    <h3>getSql</h3>
+    <p> Sorguda kullanılacak olan veya kullanılmış olan sql cümleciğinin en son halini verir. </p>
+<pre class="sh_php">
+// sorgu hazırla
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %s, %s, %u)');
+$dbo->setArg('Erhan', 'Ankara', 25);
+
+// hazırlanan sorgunun son halini yazdır
+echo $dbo->getSql();
+</pre>
+    <p> bu örnek sonucunda şöyle bir çıktı elde ederiz: </p>
+<pre class="sh_sql">
+INSERT INTO `uyeler` VALUES (NULL, 'Erhan', 'Ankara', 25)
+</pre>
+</div>
+
+<hr /> <!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
+
+<div id="affRows">
+    <h3> affRows </h3>
+    <p>En son yapılan INSERT, UPDATE, DELETE veya REPLACE işleminden sonra, kaç adet satırın bu işlemden etkilendiğini geri döndürür.</p>
+<pre class="sh_php">
+// yaşı 18'den küçük olan üyeleri sil
+$dbo->setSql('DELETE FROM `uyeler` WHERE yas &lt; 18');
+$dbo->runSql();
+
+// toplam silinen üye sayısı
+echo $dbo->affRows();
+</pre>
+</div>
+
+<!-- ===== -->
+<div id="numRows">
+    <h3> numRows </h3>
+    <p> En son yapılan SELECT veya SHOW işleminden sonra, kaç adet satırın elde edildiğini geri döndürür.</p>
+<pre class="sh_php">
+// Ankara'da ikamet eden üyeleri bul
+$dbo->setSql("SELECT * FROM `uyeler` WHERE sehir='Ankara'");
+$dbo->runSql();
+
+// toplam bulunan üye sayısı
+echo $dbo->numRows();
+</pre>
+</div>
+
+<!-- ===== -->
+<div id="insertID">
+    <h3>insertID</h3>
+    <p>En son yapılan INSERT işleminden sonra, tabloda yeni oluşan ID numarasını geri döndürür. Bu ID numarası, AUTO_INCREMENT olarak atanmış alana aittir.</p>
+<pre class="sh_php">
+// üyeler tablosuna yeni bir üye kaydı yap
+$dbo->setSql('INSERT INTO `uyeler` VALUES (NULL, %s, %s, %u)');
+$dbo->setArg('İsmail', 'Tekirdağ', 26);
+$dbo->runSql();
+
+// son eklenen kaydın ID numarasını al
+echo $dbo->insertID();
+</pre>
+</div>
+
+<!-- ===== -->
+<div id="queryCount">
+    <h3>queryCount</h3>
+    <p>Sayfa boyunca toplam kaç adet sorgunun veritabanına gönderildiğini bu fonksiyonla öğrenebilirsiniz.</p>
+<pre class="sh_php">
+// şimdiye kadar yapılan toplam sorgu sayısı
+echo $dbo->queryCount();
+</pre>
+</div>
+
+<!-- ===== -->
+<div id="queryTime">
+    <h3>queryTime</h3>
+    <p>En son sorgunun toplam kaç saniyelik bir zaman dilimi içerisinde yapıldığını verir. </p>
+<pre class="sh_php">
+// son sorgu için harcanan süre
+echo $dbo->queryTime().' saniye';
+</pre>
+</div>
+
+
+<hr />
+
+<!-- ===== -->
+<div id="giveInfo">
+    <h3> giveInfo </h3>
+    <p> O an hangi veritabanı üzerinde çalışıldığı, o ana kadar yapılmış sorgu sayısı, en son yapılan sorguya ait Sql cümleciği, son oluşan hata mesajları ve son yapılan sorgunun ne kadar zaman aldığı... gibi önemli bilgileri bir dizi <em>(array)</em> olarak geri döndürür. </p>
+<pre class="sh_php">
+// önemli bilgileri verir
+print '&lt;pre&gt;';
+print_r( $dbo->giveInfo() );
+print '&lt;/pre&gt;';
+</pre>
+    <p class="img">
+      <img src="assets/img/dump-give-info.png" width="342" height="580" alt="" title="giveInfo metodunun ürettiği örnek bir çıktı" />
+      <small>giveInfo metodunun ürettiği örnek bir çıktı</small>
+    </p>
+</div>
+
+<!-- ===== -->
+<div id="dumpInfo">
+    <h3>dumpInfo</h3>
+    <p><a href="#giveInfo">giveInfo</a> fonksiyonunun sağladığı bilgileri doğrudan ekrana yazdırır ve sayfanın geri kalanındaki kodların icra edilmesini engeller <em>(programdan çıkar)</em>. Eğer argüman olarak <strong>false</strong> girilirse, programdan çıkma özelliği kalkar.</p>
+<pre class="sh_php">
+// önemli bilgileri ekrana basar
+$dbo->dumpInfo()
+</pre>
+</div>
+
+<!-- ===== -->
+<div id="dump">
+    <h3>dump</h3>
+    <p> Herhangi bir işlem sonucunu pratik bir şekilde ekrana yazdırmak <i>(dökmek)</i> için kullanılan yardımcı fonksiyondur. İlk argüman olarak, içeriği dökülmek istenen değişken girilir. İkinci argüman olarak <strong>false</strong> değeri girilirse, programdan çıkma özelliği devre dışı kalır. </p>
+<pre class="sh_php">
+// bütün sorgu sonucunu ekrana dök ve programdan çık
+$dbo->dump( $dbo->getAll() );
+</pre>
+</div>
+
+</div><!-- // sayfaMetotlar -->

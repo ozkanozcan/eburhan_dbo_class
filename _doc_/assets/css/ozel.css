@@ -1,0 +1,35 @@
+/* =ÖZEL HACK'ler
+--------------------------------------------------------------------- */
+.cf:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0
+}
+.cf {display: inline-block;}
+/* Hides from IE-mac \*/
+* html .cf { height: 1% }
+       .cf { display: block }
+/* End hide from IE-mac */
+
+
+
+/* =ÖZEL CLASS'lar
+--------------------------------------------------------------------- */
+.sol    { float: left }
+.sag    { float: right }
+.ort    { margin: 0 auto }
+
+.yaziSol { text-align: left }
+.yaziSag { text-align: right }
+.yaziOrt { text-align: center }
+.yaziYan { text-align: justify }
+
+.gizli  { display: none }
+.debug  { border: 1px solid red }
+
+.orange { color: #e88704; }
+.green  { color: #0e711a; }
+.red    { color: #b50b26 }

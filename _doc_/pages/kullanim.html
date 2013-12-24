@@ -1,0 +1,48 @@
+<div id="sayfaKullanim">
+<h2>Kullanım</h2>
+<p>Aşağıda sınıfın örnek bir kullanımını görebilirsiniz. Genelde 4 basit adımda sonuçlara ulaşabilirsiniz. Aşağıdaki örnekte "uyeler" isimli tablodan yaşı 50'den küçük olan bütün üyeleri alıyoruz ve sonuçlara gözatmış oluyoruz.</p>
+<pre class="sh_php"><code>&lt;?php
+    // 1. dosyaları ve seçenekleri yükle
+    require_once 'dbo.class.php';
+    $opt = require 'dbo.opt.php';
+
+    // 2. sınıfı kullanıma hazırla
+    $dbo = DBO::getInstance();
+    $dbo->setOpt($opt);
+    $dbo->connect_db();
+
+    // 3. veritabanına sorgu gönder
+    $dbo->setSql('SELECT * FROM `uyeler` WHERE `yas` &lt; 50');
+    $dbo->runSql();
+
+    // 4. sonuçları ekranda göster
+    $dbo->dump( $dbo->getAll() );
+?&gt;
+</code></pre>
+
+<p><strong>İPUCU:</strong> dosyaların yüklenmesi, seçeneklerin belirlenmesi ve sınıfın kullanıma hazırlanması ile ilgili satırları her sayfaya yazmakla uğraşmamak için, bu satırları bir dosyaya 1 kereliğine yazabilirsiniz <em>(örneğin <span class="green">dbo.init.php</span> gibi)</em>:</p>
+<pre class="sh_php"><code>&lt;?php
+    // db.init.php dosyasının içeriği
+    require_once 'dbo.class.php';
+    $opt = require 'dbo.opt.php';
+    $dbo = DBO::getInstance();
+    $dbo->setOpt($opt);
+    $dbo->connect_db();
+    unset($opt);
+?&gt;
+</code></pre>
+<p>Daha sonra bu dosyayı ilgili sayfa içinden çağırarak sınıfı kullanmaya hemen başlayabilirsiniz. Örnek: </p>
+<pre class="sh_php"><code>&lt;?php
+    // hızlı başlangıç dosyasını yükle
+    require_once 'dbo.init.php';
+
+    // veritabanına sorgu gönder
+    $dbo->setSql('SELECT * FROM `uyeler` WHERE `yas` &lt; 50');
+    $dbo->runSql();
+
+    // sonuçları ekranda göster
+    $dbo->dump( $dbo->getAll() );
+?&gt;
+</code></pre>
+</div><!-- // sayfaKullanim -->
+

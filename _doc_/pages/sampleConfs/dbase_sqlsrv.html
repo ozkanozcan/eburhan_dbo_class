@@ -1,0 +1,19 @@
+<pre class="sh_php">
+'dbase' => array
+(
+    'type' => 'sqlsrv',
+    'conf' => array(
+        'name' => 'master',                 // veritabanı adı
+        'user' => 'sa',                     // kullanıcı adı
+        'pass' => '123456',                 // kullanıcı parolası
+        'host' => 'PCNAME\\SQLEXPRESS',     // veritabanı sunucusu   
+        'info' => array(
+            'ReturnDatesAsStrings' => false,
+            'ConnectionPooling' => 1,
+            'CharacterSet' => 'UTF-8',
+            'LoginTimeout' => 30,
+            'Encrypt' => 0,
+        )
+    )
+)
+</pre>
